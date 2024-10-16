@@ -1,0 +1,39 @@
+services:
+  dev:
+    build: 
+      context: .
+      args:
+        - USER_ID
+    stdin_open: true
+    tty: true 
+    privileged: true
+    entrypoint: /bin/bash
+    restart: always
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw  # x11
+      - $HOME/.Xauthority:/root/.Xauthority \
+      - ~/.ssh:/home/user/.ssh  # ssh
+      - ./cache/kit:/isaac-sim/kit/cache:rw 
+      - ./cache/ov:/root/.cache/ov:rw 
+      - ./cache/pip:/root/.cache/pip:rw 
+      - ./cache/glcache:/root/.cache/nvidia/GLCache:rw 
+      - ./cache/computecache:/root/.nv/ComputeCache:rw 
+      - ./logs:/root/.nvidia-omniverse/logs:rw 
+      - ./data:/root/.local/share/ov/data:rw 
+      - ./documents:/root/Documents:rw 
+    environment:
+      - TERM=xterm-256color
+      - DISPLAY
+      - NVIDIA_DRIVER_CAPABILITIES=all
+      - ACCEPT_EULA=y
+      - PRIVACY_CONSENT=Y
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+  
+
+
